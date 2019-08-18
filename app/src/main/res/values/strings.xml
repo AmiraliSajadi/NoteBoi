@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NoteBoi</string>
+    <string name="title_activity_note_rows">note_rows</string>
+    <string name="title_activity_main2">Main2Activity</string>
+</resources>
