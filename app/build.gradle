@@ -30,6 +30,7 @@ dependencies {
 
     implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.20.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0-beta03'
+    implementation 'androidx.cardview:cardview:1.0.0'
 
     implementation 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
 }

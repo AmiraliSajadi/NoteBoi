@@ -35,9 +35,9 @@ public class note_rows extends AppCompatActivity {
     MyAdapter adapter;
     FloatingActionButton newnote_button;
     View.OnClickListener onItemClickListener;
-    DividerItemDecoration divider_row;
     TextView my_tv;
     WaveSwipeRefreshLayout wave;
+    ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,6 @@ public class note_rows extends AppCompatActivity {
         my_rv = findViewById(R.id.rv);
         my_tv = findViewById(R.id.tv);
         wave = findViewById(R.id.main_swipe);
-        divider_row = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
 
         //     ***Apache Licence***
         //THE NEW WAVE REFRESH THING RUN
@@ -61,11 +60,12 @@ public class note_rows extends AppCompatActivity {
         });
 
         //checking current user
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser == null) {
-            Intent i = new Intent(note_rows.this, MainActivity.class);
-            startActivity(i);
-        }
+            currentUser = ParseUser.getCurrentUser();
+            if (currentUser == null){
+                Intent i = new Intent(note_rows.this, MainActivity.class);
+                startActivity(i);
+            }
+
 
         //Here i make an object form my adapter (for the Recycler view)
         adapter = new MyAdapter(data);
@@ -75,7 +75,6 @@ public class note_rows extends AppCompatActivity {
                 RecyclerView.VERTICAL,
               false
                 ));
-        my_rv.addItemDecoration(divider_row);
         onItemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,9 +122,11 @@ public class note_rows extends AppCompatActivity {
                 }
             });
         }else{
-            Toast.makeText(this, "Couldn't refresh notes", Toast.LENGTH_SHORT).show();
-            my_tv.setVisibility(View.VISIBLE);
-            my_rv.setVisibility(View.INVISIBLE);
+            if(currentUser != null){
+              Toast.makeText(this, "Couldn't refresh notes", Toast.LENGTH_SHORT).show();
+              my_tv.setVisibility(View.VISIBLE);
+              my_rv.setVisibility(View.INVISIBLE);
+            }
         }
         //TURN OFF WAVE REFRESHING
         wave.setRefreshing(false);
@@ -153,16 +154,15 @@ public class note_rows extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.log_out:
-                if(isNetworkAvailable()){
-                   ParseUser.logOut();
+               if(isNetworkAvailable()){
+                   currentUser.logOut();
                    Intent i = new Intent(note_rows.this, MainActivity.class);
                    finish();
                    startActivity(i);
-                return true;
-                } else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
-            default:
-                return super.onOptionsItemSelected(item);
+               }
+               else Toast.makeText(this, "Check your connection", Toast.LENGTH_SHORT).show();
         }
+        return true;
     }
 
     @Override

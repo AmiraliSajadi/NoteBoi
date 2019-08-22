@@ -82,6 +82,10 @@ public class note_page extends AppCompatActivity {
                 public void done(ParseException e) {
                     if (e == null) {
                         Toast.makeText(note_page.this, "Note Saved", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(note_page.this, note_rows.class);
+                        finish();
+                        startActivity(i);
+
                     } else {
                         Toast.makeText(note_page.this, "Failed to Save the Note", Toast.LENGTH_SHORT).show();
                     }
@@ -97,16 +101,25 @@ public class note_page extends AppCompatActivity {
                         // Now let's update the object with some new data.
                         object.put("title", current_title);
                         object.put("memo", current_memo);
-                        object.saveInBackground();
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null){
+                                    Intent i = new Intent(note_page.this, note_rows.class);
+                                    finish();
+                                    startActivity(i);
+                                    Toast.makeText(note_page.this, "Note Saved", Toast.LENGTH_SHORT).show();
+                                }
+                                else Toast.makeText(note_page.this, "Failed to Save the Note", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                     else Toast.makeText(note_page.this, "Failed to Save the Note", Toast.LENGTH_SHORT).show();
                 }
             });
 
         }
-        Intent i = new Intent(this, note_rows.class);
-        finish();
-        startActivity(i);
+
     }
 
     @Override
