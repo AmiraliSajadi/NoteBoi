@@ -47,8 +47,9 @@ public class sign_up extends AppCompatActivity {
     public void sign_up(View view){
 
         if(isNetworkAvailable()){
-            if (new_user.getText().toString().length() >= 5
-                    && new_pass.getText().toString().length() >= 5){
+            if (new_user.getText().toString().length() <= 12
+                    && new_pass.getText().toString().length() >= 4
+                    && new_pass.getText().toString().length() <= 16){
                 ParseUser user = new ParseUser();
                 user.setUsername(new_user.getText().toString().trim());
                 user.setPassword(new_pass.getText().toString());
@@ -68,11 +69,11 @@ public class sign_up extends AppCompatActivity {
                 });
             }
 
-            else if (new_user.getText().toString().length() < 5
-                        || new_pass.getText().toString().length() < 5){
-                View parentLayout = findViewById(android.R.id.content);
-                Snackbar.make(parentLayout, "Fields need to be more than 5 Characters", Snackbar.LENGTH_LONG);
-                Toast.makeText(this, "Fields need to be more than 5 Characters", Toast.LENGTH_SHORT).show();
+            else if (new_user.getText().toString().length() > 12) {
+                Toast.makeText(this, "Username must contain less than 13 characters", Toast.LENGTH_LONG).show();
+            }
+            else if (new_pass.getText().toString().length() < 4 || new_pass.getText().toString().length() > 12){
+                Toast.makeText(this, "Password must contain 4-12 characters", Toast.LENGTH_LONG).show();
             }
 
         }
