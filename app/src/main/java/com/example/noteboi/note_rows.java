@@ -35,7 +35,7 @@ public class note_rows extends AppCompatActivity {
     MyAdapter adapter;
     FloatingActionButton newnote_button;
     View.OnClickListener onItemClickListener;
-    TextView my_tv;
+    TextView my_tv,my_no_note_tv;
     WaveSwipeRefreshLayout wave;
     ParseUser currentUser;
 
@@ -48,7 +48,11 @@ public class note_rows extends AppCompatActivity {
         newnote_button = findViewById(R.id.newnote_b);
         my_rv = findViewById(R.id.rv);
         my_tv = findViewById(R.id.tv);
+        my_no_note_tv = findViewById(R.id.no_note_tv);
         wave = findViewById(R.id.main_swipe);
+
+        //making the "no note view" go away until we need to make it visible
+        my_no_note_tv.setVisibility(View.GONE);
 
         //     ***Apache Licence***
         //THE NEW WAVE REFRESH THING RUN
@@ -115,6 +119,10 @@ public class note_rows extends AppCompatActivity {
                                     obj.getObjectId()));
                         }
                         adapter.notifyDataSetChanged();
+                        if(data.isEmpty()){
+                            //make no note view visible
+                            my_no_note_tv.setVisibility(View.VISIBLE);
+                        }
                     }else{
                         Toast.makeText(note_rows.this, "Failed to Load Notes", Toast.LENGTH_SHORT).show();
 
