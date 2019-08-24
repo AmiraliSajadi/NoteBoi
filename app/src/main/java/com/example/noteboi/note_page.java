@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.noteboi.R;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseACL;
@@ -27,11 +25,14 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+
 public class note_page extends AppCompatActivity {
 
     Button my_save;
     EditText my_memo, my_title;
     String selected_id, current_title, current_memo;
+    android.app.AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,17 @@ public class note_page extends AppCompatActivity {
         //setting the ACL to specific user
         ParseACL.setDefaultACL(new ParseACL(), true);
 
+        //show loading dialog for pre existing notes
+        if (selected_id != null){
+            dialog = new SpotsDialog.Builder()
+                    .setContext(this)
+                    .setMessage("Loading note")
+                    .setTheme(R.style.loading_dialog)
+                    .setCancelable(false)
+                    .build();
+            dialog.show();
+        }
+
         //Filling the title and memo for already existing notes
         ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
         query.whereEqualTo("objectId", selected_id);
@@ -57,10 +69,12 @@ public class note_page extends AppCompatActivity {
                   for(ParseObject obj : objects) {
                       my_title.setText(obj.getString("title"));
                       my_memo.setText(obj.getString("memo"));
+                      dialog.dismiss();
                   }
                 }
                 else {
                     Toast.makeText(note_page.this, "Failed to read and fill", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             }
         });
@@ -71,6 +85,15 @@ public class note_page extends AppCompatActivity {
 
         current_title= my_title.getText().toString();
         current_memo = my_memo.getText().toString();
+
+        //show saving dialog
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Saving note")
+                .setTheme(R.style.loading_dialog)
+                .setCancelable(false)
+                .build();
+        dialog.show();
 
         //make an object in parse server (new note)
         if (selected_id == null) {
@@ -91,10 +114,19 @@ public class note_page extends AppCompatActivity {
                     }
                 }
             });
+            dialog.dismiss();
         }
         //updating a note
         else {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+            //show saving dialog
+            dialog = new SpotsDialog.Builder()
+                    .setContext(this)
+                    .setMessage("Saving note")
+                    .setTheme(R.style.loading_dialog)
+                    .setCancelable(false)
+                    .build();
+            dialog.show();
             query.getInBackground(selected_id, new GetCallback<ParseObject>() {
                 public void done(ParseObject object, ParseException e) {
                     if (e == null) {
@@ -117,6 +149,7 @@ public class note_page extends AppCompatActivity {
                     else Toast.makeText(note_page.this, "Failed to Save the Note", Toast.LENGTH_SHORT).show();
                 }
             });
+            dialog.dismiss();
 
         }
 

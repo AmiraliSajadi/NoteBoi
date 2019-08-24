@@ -18,10 +18,13 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import dmax.dialog.SpotsDialog;
+
 public class sign_up extends AppCompatActivity {
 
     EditText new_user, new_pass;
     Button new_signup;
+    android.app.AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,15 @@ public class sign_up extends AppCompatActivity {
     public void sign_up(View view){
 
         if(isNetworkAvailable()){
+            //show signing up dialog
+            dialog = new SpotsDialog.Builder()
+                    .setContext(this)
+                    .setMessage("Signing up")
+                    .setTheme(R.style.loading_dialog)
+                    .setCancelable(false)
+                    .build();
+            dialog.show();
+
             if (new_user.getText().toString().length() <= 12
                     && new_pass.getText().toString().length() >= 4
                     && new_pass.getText().toString().length() <= 16){
@@ -65,15 +77,18 @@ public class sign_up extends AppCompatActivity {
                         } else {
                             Toast.makeText(sign_up.this ,"sign up Failed", Toast.LENGTH_LONG).show();
                         }
+
                     }
-                });
+                });dialog.dismiss();
             }
 
             else if (new_user.getText().toString().length() > 12) {
                 Toast.makeText(this, "Username must contain less than 13 characters", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
             }
             else if (new_pass.getText().toString().length() < 4 || new_pass.getText().toString().length() > 12){
                 Toast.makeText(this, "Password must contain 4-12 characters", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
             }
 
         }

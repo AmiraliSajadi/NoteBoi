@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -40,6 +41,7 @@ public class note_rows extends AppCompatActivity {
     TextView my_tv,my_no_note_tv;
     WaveSwipeRefreshLayout wave;
     ParseUser currentUser;
+    android.app.AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,14 +166,21 @@ public class note_rows extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.log_out:
-                new SpotsDialog.Builder()
+                dialog = new SpotsDialog.Builder()
                         .setContext(this)
-                        .setMessage("Logging out")
+                        .setMessage("Loading note")
                         .setTheme(R.style.loading_dialog)
-                        .build()
-                        .show();
-
-                currentUser.logOutInBackground();
+                        .setCancelable(false)
+                        .build();
+                dialog.show();
+                currentUser.logOutInBackground(new LogOutCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null){
+                            Toast.makeText(note_rows.this, "Failed to log out", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 Intent i = new Intent(note_rows.this, MainActivity.class);
                 finish();
                 startActivity(i);

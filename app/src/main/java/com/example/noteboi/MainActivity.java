@@ -17,10 +17,13 @@ import com.parse.ParseUser;
 
 import java.util.Locale;
 
+import dmax.dialog.SpotsDialog;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText my_user,my_pass;
     Button sing_in;
+    android.app.AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,16 @@ public class MainActivity extends AppCompatActivity {
 
         if(isNetworkAvailable()){
 
-           ParseUser.logInInBackground(my_user.getText().toString().trim(),my_pass.getText().toString(),new LogInCallback() {
+            //show logging in dialog
+            dialog = new SpotsDialog.Builder()
+                    .setContext(this)
+                    .setMessage("Logging in")
+                    .setTheme(R.style.loading_dialog)
+                    .setCancelable(false)
+                    .build();
+            dialog.show();
+
+            ParseUser.logInInBackground(my_user.getText().toString().trim(),my_pass.getText().toString(),new LogInCallback() {
                public void done(ParseUser user, ParseException e) {
                    if (user != null) {
                     Toast.makeText(MainActivity.this, String.format(Locale.getDefault(),"Hi %s", username), Toast.LENGTH_SHORT).show();
@@ -50,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                    } else {
                     Toast.makeText(MainActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
                    }
+                   dialog.dismiss();
 
                }
             });
@@ -58,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         else {
 
             Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_LONG).show();
-        };
+        }
 
     }
 
