@@ -36,6 +36,7 @@
         android:hint="Enter Title"
         android:inputType="text"
         android:maxLines="1"
+        android:maxLength="31"
         android:textSize="24sp"/>
     <EditText
         android:id="@+id/ed_memo"
