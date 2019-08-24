@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
 import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
 
 public class note_rows extends AppCompatActivity {
@@ -162,13 +164,17 @@ public class note_rows extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.log_out:
-               if(isNetworkAvailable()){
-                   currentUser.logOut();
-                   Intent i = new Intent(note_rows.this, MainActivity.class);
-                   finish();
-                   startActivity(i);
-               }
-               else Toast.makeText(this, "Check your connection", Toast.LENGTH_SHORT).show();
+                new SpotsDialog.Builder()
+                        .setContext(this)
+                        .setMessage("Logging out")
+                        .setTheme(R.style.loading_dialog)
+                        .build()
+                        .show();
+
+                currentUser.logOutInBackground();
+                Intent i = new Intent(note_rows.this, MainActivity.class);
+                finish();
+                startActivity(i);
         }
         return true;
     }

@@ -33,4 +33,5 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     implementation 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
 }

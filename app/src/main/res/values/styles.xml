@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="loading_dialog" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogSpotColor">#D81B60</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:colorBackground">#fff</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
