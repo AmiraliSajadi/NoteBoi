@@ -1,5 +1,6 @@
 package com.example.noteboi;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,7 +32,7 @@ public class note_page extends AppCompatActivity {
 
     Button my_save;
     EditText my_memo, my_title;
-    String selected_id, current_title, current_memo;
+    String selected_id, current_title, current_memo, past_title, past_memo;
     android.app.AlertDialog dialog;
 
     @Override
@@ -67,8 +68,10 @@ public class note_page extends AppCompatActivity {
             public void done(List<ParseObject> objects, ParseException e) {
                 if(e == null){
                   for(ParseObject obj : objects) {
-                      my_title.setText(obj.getString("title"));
-                      my_memo.setText(obj.getString("memo"));
+                      past_memo = obj.getString("memo");
+                      past_title = obj.getString("title");
+                      my_title.setText(past_title);
+                      my_memo.setText(past_memo);
                       dialog.dismiss();
                   }
                 }
@@ -81,7 +84,7 @@ public class note_page extends AppCompatActivity {
 
     }
 
-    public void save_note(View view){
+    public void save_note(){
 
         current_title= my_title.getText().toString();
         current_memo = my_memo.getText().toString();
@@ -155,6 +158,36 @@ public class note_page extends AppCompatActivity {
 
     }
 
+    public void click_save_note(View view){
+        save_note();
+    }
+
+    //save or discard or cancel dialog
+    public void sd_dialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Save your changes or discard them?")
+                .setPositiveButton("save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        save_note();
+                    }
+                })
+                .setNeutralButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(note_page.this, note_rows.class);
+                        startActivity(intent);
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -211,8 +244,22 @@ public class note_page extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK ){
-            Intent intent = new Intent(note_page.this, note_rows.class);
-            startActivity(intent);
+            current_title= my_title.getText().toString();
+            current_memo = my_memo.getText().toString();
+
+            //show the dialog if they changed a pre existing note
+            if(selected_id != null && !past_memo.equals(current_memo) ) sd_dialog();
+            else if(selected_id != null && !past_title.equals(current_title)) sd_dialog();
+
+            //show the dialog if they made a new note && put something in it
+            else if(selected_id == null && !current_title.isEmpty()) sd_dialog();
+            else if(selected_id == null && !current_memo.isEmpty()) sd_dialog();
+
+            //otherwise don't show the dialog and take them back
+            else {
+                Intent intent = new Intent(note_page.this, note_rows.class);
+                startActivity(intent);
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
