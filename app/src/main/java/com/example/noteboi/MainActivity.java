@@ -101,4 +101,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(a);
     }
 
+    //takes user to forgot pass activity
+    public void to_forgot(View view){
+        Intent i = new Intent(MainActivity.this,forgot.class);
+        startActivity(i);
+    }
+
 }
