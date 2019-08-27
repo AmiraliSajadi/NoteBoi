@@ -52,17 +52,23 @@ public class MainActivity extends AppCompatActivity {
 
             ParseUser.logInInBackground(my_user.getText().toString().trim(),my_pass.getText().toString(),new LogInCallback() {
                public void done(ParseUser user, ParseException e) {
-                   if (user != null) {
-                    Toast.makeText(MainActivity.this, String.format(Locale.getDefault(),"Hi %s", username), Toast.LENGTH_SHORT).show();
-                    my_pass.getText().clear();
-                    my_user.getText().clear();
-                    Intent i = new Intent(MainActivity.this, note_rows.class);
-                    finish();
-                    startActivity(i);
-                   } else {
-                    Toast.makeText(MainActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
+                   if(e == null){
+                       if (user != null) {
+                           Toast.makeText(MainActivity.this, String.format(Locale.getDefault(),"Hi %s", username), Toast.LENGTH_SHORT).show();
+                           my_pass.getText().clear();
+                           my_user.getText().clear();
+                           Intent i = new Intent(MainActivity.this, note_rows.class);
+                           finish();
+                           startActivity(i);
+                       } else {
+                           Toast.makeText(MainActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
+                       }
+                       dialog.dismiss();
                    }
-                   dialog.dismiss();
+                   else {
+                       Toast.makeText(MainActivity.this, "Log in failed", Toast.LENGTH_SHORT).show();
+                       dialog.dismiss();
+                   }
 
                }
             });
