@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.dift.ui.SwipeToAction;
+
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
 
     List<RecyclerViewModel> data_list;
-    private View.OnClickListener onItemClickListener;
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends SwipeToAction.ViewHolder<RecyclerViewModel>{
 
         TextView my_title,my_memo;
 
@@ -26,14 +27,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             super(itemView);
             my_title = itemView.findViewById(R.id.tv_title);
             my_memo = itemView.findViewById(R.id.tv_memo);
-            itemView.setTag(this);
-            itemView.setOnClickListener(onItemClickListener);
 
         }
-    }
-
-    public void setOnItemClickListener(View.OnClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
     }
 
     public MyAdapter(List<RecyclerViewModel> data_list) {
@@ -56,6 +51,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         holder.my_title.setText(data_list.get(position).getTitle());
         holder.my_memo.setText(data_list.get(position).getMemo());
+        holder.data = data_list.get(position);
 
     }
 

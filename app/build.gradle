@@ -34,4 +34,5 @@ dependencies {
 
     implementation 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
+    implementation 'co.dift.ui.swipetoaction:library:1.1'
 }

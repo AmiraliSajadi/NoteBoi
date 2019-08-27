@@ -4,11 +4,21 @@ package com.example.noteboi;
 public class RecyclerViewModel {
 
     String title, memo, id;
+    boolean fav;
 
-    public RecyclerViewModel(String title, String memo, String id) {
+    public RecyclerViewModel(String title, String memo, boolean fav, String id) {
         this.title = title;
         this.memo = memo;
+        this.fav = false;
         this.id = id;
+    }
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
     }
 
     public String getId() {

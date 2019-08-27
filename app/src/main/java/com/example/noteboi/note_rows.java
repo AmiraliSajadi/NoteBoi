@@ -1,10 +1,12 @@
 package com.example.noteboi;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,7 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -28,6 +32,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.dift.ui.SwipeToAction;
 import dmax.dialog.SpotsDialog;
 import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
 
@@ -42,6 +47,7 @@ public class note_rows extends AppCompatActivity {
     WaveSwipeRefreshLayout wave;
     ParseUser currentUser;
     android.app.AlertDialog dialog;
+    SwipeToAction swipeToAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +80,6 @@ public class note_rows extends AppCompatActivity {
                 startActivity(i);
             }
 
-
         //Here i make an object form my adapter (for the Recycler view)
         adapter = new MyAdapter(data);
         my_rv.setAdapter(adapter);
@@ -83,23 +88,87 @@ public class note_rows extends AppCompatActivity {
                 RecyclerView.VERTICAL,
               false
                 ));
-        onItemClickListener = new View.OnClickListener() {
+
+        //recycler view onClick / onSwipe
+        swipeToAction = new SwipeToAction(my_rv, new SwipeToAction.SwipeListener<RecyclerViewModel>() {
             @Override
-            public void onClick(View v) {
+            public boolean swipeLeft(final RecyclerViewModel itemData) {
                if(isNetworkAvailable()){
-                   RecyclerView.ViewHolder selected_ViewHolder = (RecyclerView.ViewHolder) v.getTag();
-                   int position = selected_ViewHolder.getAdapterPosition();
-                   String clicked_id = data.get(position).getId();
-                   finish();
-                   Intent intent = new Intent(note_rows.this, note_page.class);
-                   intent.putExtra("id", clicked_id);
-                   startActivity(intent);
-               }else {
-                   Toast.makeText(note_rows.this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
+                   AlertDialog.Builder builder = new AlertDialog.Builder(note_rows.this);
+                   builder.setMessage("Are you sure you want to delete this note?")
+                           .setTitle("Delete")
+                           .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                               @Override
+                               public void onClick(DialogInterface dialogInterface, int i) {
+                                   ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+                                   query.getInBackground(itemData.getId(), new GetCallback<ParseObject>() {
+                                       @Override
+                                       public void done(ParseObject object, ParseException e) {
+                                           if (e == null) {
+                                               object.deleteInBackground();
+                                               View parentLayout = findViewById(android.R.id.content);
+                                               Snackbar.make(parentLayout,"Note Deleted",Snackbar.LENGTH_SHORT).show();
+                                               refresh();
+                                           } else {
+                                               View parentLayout = findViewById(android.R.id.content);
+                                               Snackbar.make(parentLayout,"Failed to Delete Note",Snackbar.LENGTH_SHORT).show();
+                                           }
+                                       }
+                                   });
+                               }
+                           })
+                           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                               @Override
+                               public void onClick(DialogInterface dialogInterface, int i) {
+
+                               }
+                           });
+
+                   AlertDialog dialog = builder.create();
+                   dialog.show();
                }
+               else Toast.makeText(note_rows.this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
+                return true;
             }
-        };
-        adapter.setOnItemClickListener(onItemClickListener);
+
+            @Override
+            public boolean swipeRight(RecyclerViewModel itemData) {
+                if (isNetworkAvailable()){
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+                    query.getInBackground(itemData.getId(), new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            if(e == null){
+                                object.put("fav",true);
+                                View parentLayout = findViewById(android.R.id.content);
+                                Snackbar.make(parentLayout,"Note added to Favorites",Snackbar.LENGTH_SHORT).show();
+                            }
+                            else Toast.makeText(note_rows.this, "Failed to add to Favorites", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else Toast.makeText(note_rows.this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            @Override
+            public void onClick(RecyclerViewModel itemData) {
+                if(isNetworkAvailable()){
+                    String clicked_id = itemData.getId();
+                    finish();
+                    Intent intent = new Intent(note_rows.this, note_page.class);
+                    intent.putExtra("id", clicked_id);
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(note_rows.this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onLongClick(RecyclerViewModel itemData) {
+            }
+
+        });
 
         //filling the Recycler View with objects containing title, memo and id
         refresh();
@@ -120,7 +189,9 @@ public class note_rows extends AppCompatActivity {
                             data.add(new RecyclerViewModel(
                                     obj.getString("title"),
                                     obj.getString("memo"),
-                                    obj.getObjectId()));
+                                    obj.getBoolean("fav"),
+                                    obj.getObjectId()
+                                   ));
                         }
                         adapter.notifyDataSetChanged();
                         if(data.isEmpty()){

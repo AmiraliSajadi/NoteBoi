@@ -103,6 +103,8 @@ public class note_page extends AppCompatActivity {
             ParseObject new_object = new ParseObject("notes");
             new_object.put("title", current_title);
             new_object.put("memo", current_memo);
+//            you have to change the false of fav below to what the user wants
+            new_object.put("fav",false);
             new_object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
