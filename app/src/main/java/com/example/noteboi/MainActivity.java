@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,7 +23,7 @@ import dmax.dialog.SpotsDialog;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText my_user,my_pass;
+    EditText my_pass, my_user;
     Button sing_in;
     android.app.AlertDialog dialog;
 
@@ -73,9 +74,8 @@ public class MainActivity extends AppCompatActivity {
                            Toast.makeText(MainActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
                        }
                        dialog.dismiss();
-                   }
-                   else {
-                       Toast.makeText(MainActivity.this, "Log in failed", Toast.LENGTH_SHORT).show();
+                   }else {
+                       Toast.makeText(MainActivity.this, "Wrong Username or Password", Toast.LENGTH_SHORT).show();
                        dialog.dismiss();
                    }
 
