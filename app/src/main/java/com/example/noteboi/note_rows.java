@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -244,6 +245,14 @@ public class note_rows extends AppCompatActivity {
                         .setCancelable(false)
                         .build();
                 dialog.show();
+                //dismiss the dialog after 10s automatically
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 10000);
                 currentUser.logOutInBackground(new LogOutCallback() {
                     @Override
                     public void done(ParseException e) {

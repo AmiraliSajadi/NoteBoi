@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
                     .setCancelable(false)
                     .build();
             dialog.show();
+            //dismiss the dialog after 10s automatically
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            }, 10000);
 
             ParseUser.logInInBackground(my_user.getText().toString().trim(),my_pass.getText().toString(),new LogInCallback() {
                public void done(ParseUser user, ParseException e) {

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -99,6 +100,14 @@ public class note_page extends AppCompatActivity {
                 .setCancelable(false)
                 .build();
         dialog.show();
+        //dismiss the dialog after 10s automatically
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+            }
+        }, 10000);
 
         //make an object in parse server (new note)
         if (selected_id == null) {

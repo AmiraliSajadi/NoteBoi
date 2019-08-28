@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -139,6 +140,14 @@ public class sign_up extends AppCompatActivity {
                     .setCancelable(false)
                     .build();
             dialog.show();
+            //dismiss the dialog after 10s automatically
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                }
+            }, 10000);
 
             if(new_user.getText().toString().isEmpty()){
                 Toast.makeText(this, "Pick a username", Toast.LENGTH_SHORT).show();
