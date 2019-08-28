@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -161,7 +163,10 @@ public class note_page extends AppCompatActivity {
     }
 
     public void click_save_note(View view){
-        save_note();
+       if(isNetworkAvailable()){
+           save_note();
+       }
+       else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
     }
 
     //save or discard or cancel dialog
@@ -264,5 +269,15 @@ public class note_page extends AppCompatActivity {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private boolean isNetworkAvailable(){
+
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()){
+            return true;
+        }
+        else return false;
     }
 }
