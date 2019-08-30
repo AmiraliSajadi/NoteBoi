@@ -33,15 +33,21 @@
         android:id="@+id/ed_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
         android:hint="Enter Title"
         android:inputType="text"
         android:maxLines="1"
         android:maxLength="31"
         android:textSize="24sp"/>
+
     <EditText
         android:id="@+id/ed_memo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter memo" />
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@android:color/transparent"
+        android:hint=" Enter memo" />
 
 </LinearLayout>
