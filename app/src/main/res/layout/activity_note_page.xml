@@ -32,19 +32,20 @@
     <EditText
         android:id="@+id/ed_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         android:hint="Enter Title"
         android:inputType="text"
         android:maxLines="1"
         android:maxLength="31"
-        android:textSize="24sp"/>
+        android:textSize="21sp"/>
 
     <EditText
         android:id="@+id/ed_memo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:background="@android:color/transparent"
