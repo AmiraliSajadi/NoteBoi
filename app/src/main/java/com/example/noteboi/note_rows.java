@@ -36,7 +36,6 @@ import java.util.List;
 
 import co.dift.ui.SwipeToAction;
 import dmax.dialog.SpotsDialog;
-import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
 
 public class note_rows extends AppCompatActivity {
 
@@ -66,6 +65,7 @@ public class note_rows extends AppCompatActivity {
 
         //swipe to refresh
         swipe = findViewById(R.id.srLayout);
+        swipe.setColorSchemeResources(R.color.colorAccent);
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
