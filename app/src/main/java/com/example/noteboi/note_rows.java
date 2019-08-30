@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,9 +44,8 @@ public class note_rows extends AppCompatActivity {
     List<RecyclerViewModel> data;
     MyAdapter adapter;
     FloatingActionButton newnote_button;
-    View.OnClickListener onItemClickListener;
-    TextView my_tv,my_no_note_tv;
-    WaveSwipeRefreshLayout wave;
+    TextView tv,my_no_note_tv;
+    SwipeRefreshLayout swipe;
     ParseUser currentUser;
     android.app.AlertDialog dialog;
     SwipeToAction swipeToAction;
@@ -58,18 +58,17 @@ public class note_rows extends AppCompatActivity {
         data.clear();
         newnote_button = findViewById(R.id.newnote_b);
         my_rv = findViewById(R.id.rv);
-        my_tv = findViewById(R.id.tv);
+        tv = findViewById(R.id.tv);
         my_no_note_tv = findViewById(R.id.no_note_tv);
-        wave = findViewById(R.id.main_swipe);
 
         //making the "no note view" go away until we need to make it visible
         my_no_note_tv.setVisibility(View.GONE);
 
-        //     ***Apache Licence***
-        //THE NEW WAVE REFRESH THING RUN
-        wave.setOnRefreshListener(new WaveSwipeRefreshLayout.OnRefreshListener() {
-            @Override public void onRefresh() {
-                // Do work to refresh the list here.
+        //swipe to refresh
+        swipe = findViewById(R.id.srLayout);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
                 refresh();
             }
         });
@@ -171,6 +170,15 @@ public class note_rows extends AppCompatActivity {
 
         });
 
+        //setting the no connection tv invisible/visible
+        if (isNetworkAvailable()) {
+            tv.setVisibility(View.GONE);
+        }
+        else {
+            my_rv.setVisibility(View.GONE);
+            tv.setVisibility(View.VISIBLE);
+        }
+
         //filling the Recycler View with objects containing title, memo and id
         refresh();
     }
@@ -179,7 +187,7 @@ public class note_rows extends AppCompatActivity {
 
         if (isNetworkAvailable()){
             my_rv.setVisibility(View.VISIBLE);
-            my_tv.setVisibility(View.GONE);
+            tv.setVisibility(View.GONE);
             ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
@@ -207,13 +215,11 @@ public class note_rows extends AppCompatActivity {
             });
         }else{
             if(currentUser != null){
-              Toast.makeText(this, "Couldn't refresh notes", Toast.LENGTH_SHORT).show();
-              my_tv.setVisibility(View.VISIBLE);
-              my_rv.setVisibility(View.INVISIBLE);
+                View parentLayout = findViewById(android.R.id.content);
+                Snackbar.make(parentLayout,"No Internet Connection\nCheck Your Connection and Swipe to Refresh",Snackbar.LENGTH_LONG).show();
             }
         }
-        //TURN OFF WAVE REFRESHING
-        wave.setRefreshing(false);
+        swipe.setRefreshing(false);
 
     }
 

@@ -9,12 +9,12 @@
     android:layout_marginTop="6dp"
     tools:context=".note_rows">
 
-    <jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout
-        android:id="@+id/main_swipe"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-135dp"
-        tools:layout_editor_absoluteY="-92dp">
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
@@ -22,15 +22,14 @@
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="16dp" />
-    </jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout>
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="32dp"
         android:foregroundGravity="center_vertical"
         android:gravity="center"
         android:text="No Internet Connection\n\nSwipe to Refresh"
@@ -38,7 +37,7 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.337"
+        app:layout_constraintVertical_bias="0.323"
         tools:layout_editor_absoluteX="0dp" />
 
     <TextView
@@ -46,16 +45,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:foregroundGravity="center"
         android:gravity="center"
         android:text="No notes found!\n\nYou can add notes using the + below"
         android:textColor="#D81B60"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/main_swipe"
+        app:layout_constraintBottom_toBottomOf="@+id/srLayout"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.337"
-        tools:layout_editor_absoluteX="-16dp" />
+        app:layout_constraintVertical_bias="0.349"
+        tools:layout_editor_absoluteX="0dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/newnote_b"
