@@ -26,10 +26,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogOutCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,9 @@ public class note_rows extends AppCompatActivity {
                 refresh();
             }
         });
+
+        ParseACL.setDefaultACL(new ParseACL(), true);
+
 
         //checking current user
             currentUser = ParseUser.getCurrentUser();
@@ -132,18 +137,28 @@ public class note_rows extends AppCompatActivity {
             }
 
             @Override
-            public boolean swipeRight(RecyclerViewModel itemData) {
+            public boolean swipeRight(final RecyclerViewModel itemData) {
                 if (isNetworkAvailable()){
                     ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
                     query.getInBackground(itemData.getId(), new GetCallback<ParseObject>() {
                         @Override
                         public void done(ParseObject object, ParseException e) {
-                            if(e == null){
-                                object.put("fav",true);
-                                View parentLayout = findViewById(android.R.id.content);
-                                Snackbar.make(parentLayout,"Note added to Favorites",Snackbar.LENGTH_SHORT).show();
+                            if(e == null) {
+                                //this isn't working maybe because of the permission
+                                object.put("fav", true);
+                                object.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if(e == null){
+                                            View parentLayout = findViewById(android.R.id.content);
+                                            Snackbar.make(parentLayout, "Note added to Favorites", Snackbar.LENGTH_SHORT).show();
+                                        }
+                                        else
+                                            Toast.makeText(note_rows.this, "Failed to add note to favorites", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
-                            else Toast.makeText(note_rows.this, "Failed to add to Favorites", Toast.LENGTH_SHORT).show();
+
                         }
                     });
                 }
@@ -223,13 +238,14 @@ public class note_rows extends AppCompatActivity {
 
     }
 
-    public void make_note (View view){
-        if(isNetworkAvailable()){
-            finish();
+    public void make_note (View view) {
+        if (isNetworkAvailable()) {
             Intent n = new Intent(note_rows.this, note_page.class);
+            finish();
             startActivity(n);
-        }else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

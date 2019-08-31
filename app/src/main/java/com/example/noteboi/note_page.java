@@ -221,48 +221,74 @@ public class note_page extends AppCompatActivity {
         else return false;
     }
 
-    // Deleting note
+    // Deleting/fav note
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.delete_button:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure you want to delete this note?")
-                        .setTitle("Delete")
-                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
-                                query.getInBackground(selected_id, new GetCallback<ParseObject>() {
+            case R.id.fav_in_page:
+                if(isNetworkAvailable()){
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+                    query.getInBackground(selected_id, new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject object, ParseException e) {
+                            if (e == null){
+                                object.put("fav", true);
+                                object.saveInBackground(new SaveCallback() {
                                     @Override
-                                    public void done(ParseObject object, ParseException e) {
-                                        if (e == null) {
-                                            object.deleteInBackground();
-                                            Toast.makeText(note_page.this, "Note Deleted", Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(note_page.this, note_rows.class);
-                                            finish();
-                                            startActivity(intent);
-                                        } else {
-                                            Toast.makeText(note_page.this, "Failed to Delete Note", Toast.LENGTH_SHORT).show();
-                                        }
+                                    public void done(ParseException e) {
+                                        Toast.makeText(note_page.this, "Note added to favorites", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            else Toast.makeText(note_page.this, "Failed to add note to favorites", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
+                break;
 
-                            }
-                        });
+            case R.id.delete_button:
+                if(isNetworkAvailable()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Are you sure you want to delete this note?")
+                            .setTitle("Delete")
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+                                    query.getInBackground(selected_id, new GetCallback<ParseObject>() {
+                                        @Override
+                                        public void done(ParseObject object, ParseException e) {
+                                            if (e == null) {
+                                                object.deleteInBackground();
+                                                Toast.makeText(note_page.this, "Note Deleted", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(note_page.this, note_rows.class);
+                                                finish();
+                                                startActivity(intent);
+                                            } else {
+                                                Toast.makeText(note_page.this, "Failed to Delete Note", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                         AlertDialog dialog = builder.create();
-                         dialog.show();
+                                }
+                            });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+                else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
+                break;
 
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    return super.onOptionsItemSelected(item);
     }
 
     @Override

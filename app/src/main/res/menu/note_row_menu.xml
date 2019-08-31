@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/current_user"
         android:title="Current User"
-        android:iconTint="#cad1da"/>
+        android:iconTint="#cad1da"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/log_out"
         android:title="Log Out"
