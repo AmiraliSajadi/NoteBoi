@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/cons"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clayout"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -36,6 +36,8 @@
         android:text="No Internet Connection\n\nSwipe to Refresh"
         android:textColor="#D81B60"
         android:textSize="24sp"
+        app:layout_anchor="@+id/no_note_tv"
+        app:layout_anchorGravity="bottom|center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.323"
@@ -51,6 +53,8 @@
         android:text="No notes found!\n\nYou can add notes using the + below"
         android:textColor="#D81B60"
         android:textSize="24sp"
+        app:layout_anchor="@+id/srLayout"
+        app:layout_anchorGravity="start|center"
         app:layout_constraintBottom_toBottomOf="@+id/srLayout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.349"
@@ -62,13 +66,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="#D81B60"
-        android:baselineAlignBottom="true"
         android:onClick="make_note"
         android:src="@drawable/ic_add_white_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_anchor="@+id/srLayout"
+        app:layout_anchorGravity="end|bottom"
+        app:layout_constraintBottom_toBottomOf="@+id/srLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:maxImageSize="30dp" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

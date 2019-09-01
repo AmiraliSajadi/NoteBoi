@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             my_title = itemView.findViewById(R.id.tv_title);
             my_memo = itemView.findViewById(R.id.tv_memo);
             heart = itemView.findViewById(R.id.fav);
+//            if(!data_list.get(getAdapterPosition()).isFav()) heart.setVisibility(View.GONE);
         }
 
     }
@@ -55,13 +57,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         holder.my_title.setText(data_list.get(position).getTitle());
         holder.my_memo.setText(data_list.get(position).getMemo());
-        holder.heart.setImageResource(R.drawable.ic_favorite_d81b60_24dp);
+        holder.heart.setImageResource(R.drawable.heat);
         holder.data = data_list.get(position);
-        if(holder.data.isFav()) holder.heart.setVisibility(View.VISIBLE);
-        //for some reason all fall in else category
-        else holder.heart.setVisibility(View.GONE);
-    }
+        if(!holder.data.isFav()) holder.heart.setVisibility(View.INVISIBLE);
 
+
+    }
 
     @Override
     public int getItemCount() {
@@ -69,4 +70,3 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
 }
-

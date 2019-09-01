@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -33,10 +34,12 @@ import dmax.dialog.SpotsDialog;
 
 public class note_page extends AppCompatActivity {
 
+    boolean fav_stat, new_fav_stat;
     Button my_save;
     EditText my_memo, my_title;
     String selected_id, current_title, current_memo, past_title, past_memo;
     android.app.AlertDialog dialog;
+    MenuItem heart, delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,7 @@ public class note_page extends AppCompatActivity {
         my_title = findViewById(R.id.ed_title);
         Intent n = getIntent();
         selected_id = n.getStringExtra("id");
-
+        new_fav_stat = false;
         //setting the ACL to specific user
         ParseACL.setDefaultACL(new ParseACL(), true);
 
@@ -70,7 +73,6 @@ public class note_page extends AppCompatActivity {
                 }
             }, 10000);
         }
-
         //Filling the title and memo for already existing notes
         ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
         query.whereEqualTo("objectId", selected_id);
@@ -123,7 +125,7 @@ public class note_page extends AppCompatActivity {
             new_object.put("title", current_title);
             new_object.put("memo", current_memo);
 //            you have to change the false of fav below to what the user wants
-            new_object.put("fav",false);
+            new_object.put("fav",fav_stat);
             new_object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -157,6 +159,7 @@ public class note_page extends AppCompatActivity {
                         // Now let's update the object with some new data.
                         object.put("title", current_title);
                         object.put("memo", current_memo);
+                        object.put("fav",fav_stat);
                         object.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -217,8 +220,27 @@ public class note_page extends AppCompatActivity {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.note_menu, menu);
-        if (selected_id != null) return true;
-        else return false;
+        heart = menu.findItem(R.id.fav_in_page);
+        delete = menu.findItem(R.id.delete_button);
+        if (selected_id != null) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+            query.whereEqualTo("objectId", selected_id);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+                    for(ParseObject obj : objects) {
+                        fav_stat = obj.getBoolean("fav");
+                    }
+                    if(!fav_stat) heart.setIcon(R.drawable.ic_favorite_border_white_24dp);
+                }
+            });
+            return true;
+        }
+        else {
+            delete.setVisible(false);
+            heart.setIcon(R.drawable.ic_favorite_border_white_24dp);
+             return true;
+        }
     }
 
     // Deleting/fav note
@@ -227,22 +249,34 @@ public class note_page extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.fav_in_page:
                 if(isNetworkAvailable()){
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
-                    query.getInBackground(selected_id, new GetCallback<ParseObject>() {
-                        @Override
-                        public void done(ParseObject object, ParseException e) {
-                            if (e == null){
-                                object.put("fav", true);
-                                object.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        Toast.makeText(note_page.this, "Note added to favorites", Toast.LENGTH_SHORT).show();
+                    if(selected_id != null){
+                        ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+                        query.getInBackground(selected_id, new GetCallback<ParseObject>() {
+                            @Override
+                            public void done(ParseObject object, ParseException e) {
+                                if (e == null){
+                                    if(!fav_stat){
+                                        fav_stat = true;
+                                        heart.setIcon(R.drawable.ic_favorite_white_24dp);
+                                    }else {
+                                        fav_stat = false;
+                                        heart.setIcon(R.drawable.ic_favorite_border_white_24dp);
                                     }
-                                });
+                                }
+                                else Toast.makeText(note_page.this, "Failed to add note to favorites", Toast.LENGTH_SHORT).show();
                             }
-                            else Toast.makeText(note_page.this, "Failed to add note to favorites", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                    else {
+                        if(!fav_stat) {
+                            heart.setIcon(R.drawable.ic_favorite_white_24dp);
+                            fav_stat = true;
                         }
-                    });
+                        else {
+                            heart.setIcon(R.drawable.ic_favorite_border_white_24dp);
+                            fav_stat = false;
+                        }
+                    }
                 } else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
                 break;
 

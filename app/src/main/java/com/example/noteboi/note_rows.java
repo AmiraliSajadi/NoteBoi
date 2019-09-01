@@ -13,11 +13,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Layout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,8 +58,8 @@ public class note_rows extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_rows);
+
         data = new ArrayList<>();
-        data.clear();
         newnote_button = findViewById(R.id.newnote_b);
         my_rv = findViewById(R.id.rv);
         tv = findViewById(R.id.tv);
@@ -111,11 +114,11 @@ public class note_rows extends AppCompatActivity {
                                        public void done(ParseObject object, ParseException e) {
                                            if (e == null) {
                                                object.deleteInBackground();
-                                               View parentLayout = findViewById(android.R.id.content);
+                                               View parentLayout = findViewById(R.id.clayout);
                                                Snackbar.make(parentLayout,"Note Deleted",Snackbar.LENGTH_SHORT).show();
                                                refresh();
                                            } else {
-                                               View parentLayout = findViewById(android.R.id.content);
+                                               View parentLayout = findViewById(R.id.clayout);
                                                Snackbar.make(parentLayout,"Failed to Delete Note",Snackbar.LENGTH_SHORT).show();
                                            }
                                        }
@@ -143,24 +146,21 @@ public class note_rows extends AppCompatActivity {
                     query.getInBackground(itemData.getId(), new GetCallback<ParseObject>() {
                         @Override
                         public void done(ParseObject object, ParseException e) {
-                            if(e == null) {
-                                //this isn't working maybe because of the permission
                                 object.put("fav", true);
                                 object.saveInBackground(new SaveCallback() {
                                     @Override
                                     public void done(ParseException e) {
-                                        if(e == null){
-                                            View parentLayout = findViewById(android.R.id.content);
+                                        if (e == null) {
+                                            View parentLayout = findViewById(R.id.clayout);
                                             Snackbar.make(parentLayout, "Note added to Favorites", Snackbar.LENGTH_SHORT).show();
-                                        }
-                                        else
-                                            Toast.makeText(note_rows.this, "Failed to add note to favorites", Toast.LENGTH_SHORT).show();
+                                        } else Toast.makeText(note_rows.this, "Failed to add note to favorites", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                            }
+
 
                         }
                     });
+
                 }
                 else Toast.makeText(note_rows.this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
                 return true;
@@ -215,7 +215,8 @@ public class note_rows extends AppCompatActivity {
                                     obj.getString("memo"),
                                     obj.getBoolean("fav"),
                                     obj.getObjectId()
-                                   ));
+                            ));
+
                         }
                         adapter.notifyDataSetChanged();
                         if(data.isEmpty()){
@@ -230,7 +231,7 @@ public class note_rows extends AppCompatActivity {
             });
         }else{
             if(currentUser != null){
-                View parentLayout = findViewById(android.R.id.content);
+                View parentLayout = findViewById(R.id.clayout);
                 Snackbar.make(parentLayout,"No Internet Connection\nCheck Your Connection and Swipe to Refresh",Snackbar.LENGTH_LONG).show();
             }
         }
