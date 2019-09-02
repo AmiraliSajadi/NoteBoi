@@ -1,5 +1,6 @@
 package com.example.noteboi;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +39,7 @@ public class note_page extends AppCompatActivity {
     boolean fav_stat, new_fav_stat;
     Button my_save;
     EditText my_memo, my_title;
-    String selected_id, current_title, current_memo, past_title, past_memo;
+    String selected_id, current_title, current_memo, past_title, past_memo, rotate_memo, rotate_title;
     android.app.AlertDialog dialog;
     MenuItem heart, delete;
 
@@ -52,49 +54,52 @@ public class note_page extends AppCompatActivity {
         Intent n = getIntent();
         selected_id = n.getStringExtra("id");
         new_fav_stat = false;
+
         //setting the ACL to specific user
         ParseACL.setDefaultACL(new ParseACL(), true);
 
-        //show loading dialog for pre existing notes
-        if (selected_id != null){
-            dialog = new SpotsDialog.Builder()
-                    .setContext(this)
-                    .setMessage("Loading note")
-                    .setTheme(R.style.loading_dialog)
-                    .setCancelable(false)
-                    .build();
-            dialog.show();
-            //dismiss the dialog after 10s automatically
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                }
-            }, 10000);
-        }
-        //Filling the title and memo for already existing notes
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
-        query.whereEqualTo("objectId", selected_id);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if(e == null){
-                  for(ParseObject obj : objects) {
-                      past_memo = obj.getString("memo");
-                      past_title = obj.getString("title");
-                      my_title.setText(past_title);
-                      my_memo.setText(past_memo);
+        if(savedInstanceState == null){
+          //show loading dialog for pre existing notes
+          if (selected_id != null){
+              dialog = new SpotsDialog.Builder()
+                      .setContext(this)
+                      .setMessage("Loading note")
+                      .setTheme(R.style.loading_dialog)
+                      .setCancelable(false)
+                      .build();
+              dialog.show();
+              //dismiss the dialog after 10s automatically
+              final Handler handler = new Handler();
+              handler.postDelayed(new Runnable() {
+                  @Override
+                  public void run() {
                       dialog.dismiss();
                   }
-                }
-                else {
-                    Toast.makeText(note_page.this, "Failed to read and fill", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
-            }
-        });
+              }, 10000);
 
+              //Filling the title and memo for already existing notes
+              ParseQuery<ParseObject> query = ParseQuery.getQuery("notes");
+              query.whereEqualTo("objectId", selected_id);
+              query.findInBackground(new FindCallback<ParseObject>() {
+                  @Override
+                  public void done(List<ParseObject> objects, ParseException e) {
+                      if(e == null){
+                          for(ParseObject obj : objects) {
+                              past_memo = obj.getString("memo");
+                              past_title = obj.getString("title");
+                              my_title.setText(past_title);
+                              my_memo.setText(past_memo);
+                              dialog.dismiss();
+                          }
+                      }
+                      else {
+                          Toast.makeText(note_page.this, "Try again later", Toast.LENGTH_SHORT).show();
+                          dialog.dismiss();
+                      }
+                  }
+              });
+          }
+      }
     }
 
     public void save_note(){
@@ -332,8 +337,8 @@ public class note_page extends AppCompatActivity {
             current_memo = my_memo.getText().toString();
 
             //show the dialog if they changed a pre existing note
-            if(selected_id != null && !past_memo.equals(current_memo) ) sd_dialog();
-            else if(selected_id != null && !past_title.equals(current_title)) sd_dialog();
+            if(selected_id != null && !my_memo.getText().toString().equals(current_memo) ) sd_dialog();
+            else if(selected_id != null && !my_title.getText().toString().equals(current_title)) sd_dialog();
 
             //show the dialog if they made a new note && put something in it
             else if(selected_id == null && !current_title.isEmpty()) sd_dialog();
@@ -357,4 +362,5 @@ public class note_page extends AppCompatActivity {
         }
         else return false;
     }
+
 }

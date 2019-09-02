@@ -32,6 +32,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             my_title = itemView.findViewById(R.id.tv_title);
             my_memo = itemView.findViewById(R.id.tv_memo);
             heart = itemView.findViewById(R.id.fav);
+            heart.setVisibility(View.GONE);
+            //gets the adapterPosition out of index for some reason
 //            if(!data_list.get(getAdapterPosition()).isFav()) heart.setVisibility(View.GONE);
         }
 
@@ -59,7 +61,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.my_memo.setText(data_list.get(position).getMemo());
         holder.heart.setImageResource(R.drawable.heat);
         holder.data = data_list.get(position);
-        if(!holder.data.isFav()) holder.heart.setVisibility(View.INVISIBLE);
+        //doesn't recognize any note as fav
+        if(holder.data.isFav()) holder.heart.setVisibility(View.VISIBLE);
 
 
     }
