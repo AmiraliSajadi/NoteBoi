@@ -10,11 +10,12 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
+        android:fontFamily="serif"
         android:gravity="center"
         android:text="NoteBoi"
         android:textColor="#D81B60"
-        android:textSize="36sp"
+        android:textSize="48sp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -23,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="75dp"
         android:layout_marginEnd="40dp"
         android:hint="Username"
         android:inputType="text"

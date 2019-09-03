@@ -31,6 +31,7 @@ public class forgot extends AppCompatActivity {
         forgot_e = findViewById(R.id.ed_forgot);
         reset_b = findViewById(R.id.forgot_b);
 
+        getSupportActionBar().setTitle("Login Help");
     }
 
     private boolean isNetworkAvailable(){

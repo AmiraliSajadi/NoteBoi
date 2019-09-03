@@ -53,7 +53,6 @@ public class note_page extends AppCompatActivity {
         my_title = findViewById(R.id.ed_title);
         Intent n = getIntent();
         selected_id = n.getStringExtra("id");
-        new_fav_stat = false;
 
         //setting the ACL to specific user
         ParseACL.setDefaultACL(new ParseACL(), true);
@@ -130,7 +129,7 @@ public class note_page extends AppCompatActivity {
             new_object.put("title", current_title);
             new_object.put("memo", current_memo);
 //            you have to change the false of fav below to what the user wants
-            new_object.put("fav",fav_stat);
+            new_object.put("fav",new_fav_stat);
             new_object.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -164,7 +163,7 @@ public class note_page extends AppCompatActivity {
                         // Now let's update the object with some new data.
                         object.put("title", current_title);
                         object.put("memo", current_memo);
-                        object.put("fav",fav_stat);
+                        object.put("fav",new_fav_stat);
                         object.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -235,6 +234,7 @@ public class note_page extends AppCompatActivity {
                 public void done(List<ParseObject> objects, ParseException e) {
                     for(ParseObject obj : objects) {
                         fav_stat = obj.getBoolean("fav");
+                        new_fav_stat = fav_stat;
                     }
                     if(!fav_stat) heart.setIcon(R.drawable.ic_favorite_border_white_24dp);
                 }
@@ -260,11 +260,11 @@ public class note_page extends AppCompatActivity {
                             @Override
                             public void done(ParseObject object, ParseException e) {
                                 if (e == null){
-                                    if(!fav_stat){
-                                        fav_stat = true;
+                                    if(!new_fav_stat){
+                                        new_fav_stat = true;
                                         heart.setIcon(R.drawable.ic_favorite_white_24dp);
                                     }else {
-                                        fav_stat = false;
+                                        new_fav_stat = false;
                                         heart.setIcon(R.drawable.ic_favorite_border_white_24dp);
                                     }
                                 }
@@ -273,13 +273,13 @@ public class note_page extends AppCompatActivity {
                         });
                     }
                     else {
-                        if(!fav_stat) {
+                        if(!new_fav_stat) {
                             heart.setIcon(R.drawable.ic_favorite_white_24dp);
-                            fav_stat = true;
+                            new_fav_stat = true;
                         }
                         else {
                             heart.setIcon(R.drawable.ic_favorite_border_white_24dp);
-                            fav_stat = false;
+                            new_fav_stat = false;
                         }
                     }
                 } else Toast.makeText(this, "Check Your Network Connection", Toast.LENGTH_SHORT).show();
@@ -343,12 +343,13 @@ public class note_page extends AppCompatActivity {
             //show the dialog if they made a new note && put something in it
             else if(selected_id == null && !current_title.isEmpty()) sd_dialog();
             else if(selected_id == null && !current_memo.isEmpty()) sd_dialog();
-
+            else if(selected_id != null && new_fav_stat!=fav_stat) sd_dialog();
             //otherwise don't show the dialog and take them back
             else {
                 Intent intent = new Intent(note_page.this, note_rows.class);
                 startActivity(intent);
             }
+
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -362,5 +363,8 @@ public class note_page extends AppCompatActivity {
         }
         else return false;
     }
-
 }
+
+
+
+
