@@ -154,6 +154,7 @@ public class note_rows extends AppCompatActivity {
                                         if (e == null) {
                                             View parentLayout = findViewById(R.id.clayout);
                                             Snackbar.make(parentLayout, "Note added to Favorites", Snackbar.LENGTH_SHORT).show();
+                                            refresh();
                                         } else Toast.makeText(note_rows.this, "Failed to add note to favorites", Toast.LENGTH_SHORT).show();
                                     }
                                 });
