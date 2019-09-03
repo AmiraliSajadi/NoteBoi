@@ -2,6 +2,7 @@ package com.example.noteboi;
 
 import android.content.Context;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +28,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         TextView my_title,my_memo;
         ImageView heart;
 
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
+        public MyViewHolder(View v) {
+            super(v);
             my_title = itemView.findViewById(R.id.tv_title);
             my_memo = itemView.findViewById(R.id.tv_memo);
             heart = itemView.findViewById(R.id.fav);
-            heart.setVisibility(View.GONE);
-            //gets the adapterPosition out of index for some reason
-//            if(!data_list.get(getAdapterPosition()).isFav()) heart.setVisibility(View.GONE);
         }
-
     }
 
     public MyAdapter(List<RecyclerViewModel> data_list) {
@@ -61,9 +58,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.my_memo.setText(data_list.get(position).getMemo());
         holder.heart.setImageResource(R.drawable.heat);
         holder.data = data_list.get(position);
+        Log.i("current data's title",holder.data.getTitle());
+        Log.i("current data's fav stat",String.valueOf(holder.data.isFav()));
         //doesn't recognize any note as fav
         if(holder.data.isFav()) holder.heart.setVisibility(View.VISIBLE);
-
+        else holder.heart.setVisibility(View.INVISIBLE);
 
     }
 

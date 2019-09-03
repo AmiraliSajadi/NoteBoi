@@ -44,6 +44,7 @@ import dmax.dialog.SpotsDialog;
 
 public class note_rows extends AppCompatActivity {
 
+    boolean fav_stat;
     RecyclerView my_rv;
     List<RecyclerViewModel> data;
     MyAdapter adapter;
@@ -196,6 +197,8 @@ public class note_rows extends AppCompatActivity {
 
         //filling the Recycler View with objects containing title, memo and id
         refresh();
+
+
     }
 
     public void refresh(){
@@ -210,13 +213,14 @@ public class note_rows extends AppCompatActivity {
                     if (e == null){
                         data.clear();
                         for( ParseObject obj : objects){
+                            Log.i("title", String.valueOf(obj.getString("title")));
+                            Log.i("fav stat", String.valueOf(obj.getBoolean("fav")));
                             data.add(new RecyclerViewModel(
                                     obj.getString("title"),
                                     obj.getString("memo"),
                                     obj.getBoolean("fav"),
                                     obj.getObjectId()
                             ));
-
                         }
                         adapter.notifyDataSetChanged();
                         if(data.isEmpty()){

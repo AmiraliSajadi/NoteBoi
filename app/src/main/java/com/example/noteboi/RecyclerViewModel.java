@@ -9,7 +9,7 @@ public class RecyclerViewModel {
     public RecyclerViewModel(String title, String memo, boolean fav, String id) {
         this.title = title;
         this.memo = memo;
-        this.fav = false;
+        this.fav = fav;
         this.id = id;
     }
 
