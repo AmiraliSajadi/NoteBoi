@@ -10,6 +10,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     EditText my_pass, my_user;
     Button sing_in;
     android.app.AlertDialog dialog;
-//    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +39,6 @@ public class MainActivity extends AppCompatActivity {
         my_user = findViewById(R.id.ed_user);
         my_pass = findViewById(R.id.ed_pass);
         sing_in = findViewById(R.id.b_singin);
-
-        //getting the past users from shared preferences
-//        sp = getSharedPreferences("past_users", Activity.MODE_PRIVATE);
-//        String users = sp.getString("user",null);
-//        Toast.makeText(this, users, Toast.LENGTH_SHORT).show();
     }
 
     public void sign_in(View view){
@@ -72,11 +68,6 @@ public class MainActivity extends AppCompatActivity {
                public void done(ParseUser user, ParseException e) {
                    if(e == null){
                        if (user != null) {
-                           //saving the entered users in shared preferences
-//                           tsp = getSharedPreferences("past_users", Activity.MODE_PRIVATE);
-//                           SharedPreferences.Editor editor = sp.edit();
-//                           editor.putString("user", my_user.getText().toString());
-//                           editor.commit();
                            Toast.makeText(MainActivity.this, String.format(Locale.getDefault(),"Hi %s", username), Toast.LENGTH_SHORT).show();
                            my_pass.getText().clear();
                            my_user.getText().clear();
