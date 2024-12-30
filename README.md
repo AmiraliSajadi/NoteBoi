@@ -25,3 +25,5 @@ The app uses **Parse Server**, hosted on **Back4App**, for seamless account crea
 
 ## Reflection
 I created this app as one of my first programming projects, putting significant effort into learning Android development and backend integration. While it may be imperfect, it has a special place in my programming journey.
+
+Cheers!
